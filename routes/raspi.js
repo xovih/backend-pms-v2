@@ -57,7 +57,8 @@ router.post("/update", async (req, res) => {
         Sensor_Bubut_Integrated_2_2,
       } = req.body
 
-      const waktu = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const timee = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const waktu = state_date + " " + timee
 
       const regang_int = {
         count_time: waktu,
@@ -140,7 +141,8 @@ router.post("/update", async (req, res) => {
         Sensor_Bor_Integrated_1_2,
       } = req.body
 
-      const waktu = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const timee = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const waktu = state_date + " " + timee
 
       const cuci_bilas = {
         status: state_mesin_cuci_bilas == "0" ? "run" : "idle"
