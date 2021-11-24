@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json())
 
 // Routes
-app.use("/api/dashboard", raspiRoutes)
+app.use("/dashboard", raspiRoutes)
 
 
 app.listen(PORT, (err) => {

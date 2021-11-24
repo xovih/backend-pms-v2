@@ -1,6 +1,35 @@
 const router = require("express").Router()
+const moment = require("moment")
 const pgDb = require("../utils/pgConn")
 const socket = require("../utils/socket")
+
+router.get("/moment", (req, res) => {
+  res.json(moment("02:00:34 PM", ["h:mm:ss A"]).format("HH:mm:ss"))
+})
+
+function whatIsMyStatus(mCon, cCon) {
+  if (mCon == '0') {
+    // Machine is ON
+    if (cCon == '1') {
+      return "idle"
+    }
+
+    return "run"
+  } else {
+    // Machine is OFF
+    return "stop"
+  }
+}
+
+function myCouplingIs(cop) {
+  // Coupling is OFF
+  if (cop == "1") {
+    return "stop"
+  }
+
+  // Coupling is ON
+  return "run"
+}
 
 router.post("/update", async (req, res) => {
   try {
@@ -32,34 +61,41 @@ router.post("/update", async (req, res) => {
         Sensor_Bubut_Integrated_2_2,
       } = req.body
 
+      const waktu = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+
       const regang_int = {
-        mesin: state_mesin_regang_int,
-        coupling: state_coupling_regang_int,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_regang_int, state_coupling_regang_int),
+        coupling: myCouplingIs(state_coupling_regang_int),
         counter1: Sensor_Regang_Integrated_1
       }
 
       const mal_int_1 = {
-        mesin: state_mesin_mal_int_1,
-        coupling: state_coupling_mal_int_1,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_mal_int_1, state_coupling_mal_int_1),
+        coupling: myCouplingIs(state_coupling_mal_int_1),
         counter1: Sensor_Mal_Integrated_1
       }
 
       const mal_int_2 = {
-        mesin: state_mesin_mal_int_2,
-        coupling: state_coupling_mal_int_2,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_mal_int_2, state_coupling_mal_int_2),
+        coupling: myCouplingIs(state_coupling_mal_int_2),
         counter1: Sensor_Mal_Integrated_2
       }
 
       const bubut_pinggir_1 = {
-        mesin: state_mesin_bubut_int,
-        coupling: state_coupling_bubut_int_1,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_bubut_int, state_coupling_bubut_int_1),
+        coupling: myCouplingIs(state_coupling_bubut_int_1),
         counter1: Sensor_Bubut_Integrated_1_1,
         counter2: Sensor_Bubut_Integrated_1_2
       }
 
       const bubut_pinggir_2 = {
-        mesin: state_mesin_bubut_int,
-        coupling: state_coupling_bubut_int_2,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_bubut_int, state_coupling_bubut_int_2),
+        coupling: myCouplingIs(state_coupling_bubut_int_2),
         counter1: Sensor_Bubut_Integrated_2_1,
         counter2: Sensor_Bubut_Integrated_2_2
       }
@@ -108,34 +144,38 @@ router.post("/update", async (req, res) => {
         Sensor_Bor_Integrated_1_2,
       } = req.body
 
+      const waktu = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+
       const cuci_bilas = {
-        mesin: state_mesin_cuci_bilas
+        status: state_mesin_cuci_bilas == "0" ? "run" : "idle"
       }
 
       const oven = {
-        mesin: state_mesin_oven
+        status: state_mesin_oven == "0" ? "run" : "idle"
       }
 
       const cuci_asam = {
-        mesin: state_mesin_cuci_asam
+        status: state_mesin_cuci_asam == "0" ? "run" : "idle"
       }
 
       const botol_integrated = {
-        mesin: state_mesin_botol_integrated,
-        coupling: state_coupling_botol_integrated,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_botol_integrated, state_coupling_botol_integrated),
+        coupling: myCouplingIs(state_coupling_botol_integrated),
         counter1: Sensor_Botol_Integrated_1_1,
         counter2: Sensor_Botol_Integrated_1_2
       }
 
       const bor_integrated = {
-        mesin: state_mesin_bor_integrated,
-        coupling: state_coupling_bor_integrated,
+        count_time: waktu,
+        status: whatIsMyStatus(state_mesin_bor_integrated, state_coupling_bor_integrated),
+        coupling: myCouplingIs(state_coupling_bor_integrated),
         counter1: Sensor_Bor_Integrated_1_1,
         counter2: Sensor_Bor_Integrated_1_2
       }
 
       const bilas_p3 = {
-        mesin: state_mesin_bilas_p3
+        status: state_mesin_bilas_p3 == "0" ? "run" : "idle"
       }
 
       mesin.cuci_bilas = cuci_bilas
