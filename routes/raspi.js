@@ -231,8 +231,8 @@ router.get("/mesin", async (req, res) => {
     )
     const data28 = ms28.rows[0]
 
-    const waktu14 = data14.state_time
-    const waktu28 = data28.state_time
+    const waktu14 = data14.state_date + " " + data14.state_time
+    const waktu28 = data28.state_date + " " + data28.state_time
 
     let mesin = {
       regang_int: {
