@@ -3,10 +3,6 @@ const moment = require("moment")
 const pgDb = require("../utils/pgConn")
 const socket = require("../utils/socket")
 
-router.get("/moment", (req, res) => {
-  res.json(moment("02:00:34 PM", ["h:mm:ss A"]).format("HH:mm:ss"))
-})
-
 function whatIsMyStatus(mCon, cCon) {
   if (mCon == '0') {
     // Machine is ON
@@ -235,59 +231,82 @@ router.get("/mesin", async (req, res) => {
     )
     const data28 = ms28.rows[0]
 
-
+    const waktu14 = data14.state_time
+    const waktu28 = data28.state_time
 
     let mesin = {
       regang_int: {
-        mesin: data14.state_mesin_regang_int,
-        coupling: data14.state_coupling_regang_int,
-        counter1: 0
+        status: whatIsMyStatus(data14.state_mesin_regang_int, data14.state_coupling_regang_int),
+        last_count_time: waktu14,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data14.state_coupling_regang_int),
+        sepur1_last_count: 0
       },
       mal_int_1: {
-        mesin: data14.state_mesin_mal_int_1,
-        coupling: data14.state_coupling_mal_int_1,
-        counter1: 0
+        status: whatIsMyStatus(data14.state_mesin_mal_int_1, data14.state_coupling_mal_int_1),
+        last_count_time: waktu14,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data14.state_coupling_mal_int_1),
+        sepur1_last_count: 0
       },
       mal_int_2: {
-        mesin: data14.state_mesin_mal_int_2,
-        coupling: data14.state_coupling_mal_int_2,
-        counter1: 0
+        status: whatIsMyStatus(data14.state_mesin_mal_int_2, data14.state_coupling_mal_int_2),
+        last_count_time: waktu14,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data14.state_coupling_mal_int_2),
+        sepur1_last_count: 0
       },
       bubut_pinggir_1: {
-        mesin: data14.state_mesin_bubut_int,
-        coupling: data14.state_coupling_bubut_int_1,
-        counter1: 0,
-        counter2: 0
+        status: whatIsMyStatus(data14.state_mesin_bubut_int, data14.state_coupling_bubut_int_1),
+        last_count_time: waktu14,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data14.state_coupling_bubut_int_1),
+        sepur1_last_count: 0,
+        sepur2_count: 0,
+        sepur2_status: myCouplingIs(data14.state_coupling_bubut_int_1),
+        sepur2_last_count: 0
       },
       bubut_pinggir_2: {
-        mesin: data14.state_mesin_bubut_int,
-        coupling: data14.state_coupling_bubut_int_2,
-        counter1: 0,
-        counter2: 0
+        status: whatIsMyStatus(data14.state_mesin_bubut_int, data14.state_coupling_bubut_int_2),
+        last_count_time: waktu14,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data14.state_coupling_bubut_int_2),
+        sepur1_last_count: 0,
+        sepur2_count: 0,
+        sepur2_status: myCouplingIs(data14.state_coupling_bubut_int_2),
+        sepur2_last_count: 0
       },
       cuci_bilas: {
-        mesin: data28.state_mesin_cuci_bilas
+        mesin: data28.state_mesin_cuci_bilas == "1" ? "iddle" : "run"
       },
       oven: {
-        mesin: data28.state_mesin_oven
+        mesin: data28.state_mesin_oven == "1" ? "iddle" : "run"
       },
       cuci_asam: {
-        mesin: data28.state_mesin_cuci_asam
+        mesin: data28.state_mesin_cuci_asam == "1" ? "iddle" : "run"
       },
       botol_integrated: {
-        mesin: data28.state_mesin_botol_integrated,
-        coupling: data28.state_coupling_botol_integrated,
-        counter1: 0,
-        counter2: 0
+        status: whatIsMyStatus(data28.state_mesin_botol_integrated, data28.state_coupling_botol_integrated),
+        last_count_time: waktu28,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data28.state_coupling_botol_integrated),
+        sepur1_last_count: 0,
+        sepur2_count: 0,
+        sepur2_status: myCouplingIs(data28.state_coupling_botol_integrated),
+        sepur2_last_count: 0
       },
       bor_integrated: {
-        mesin: data28.state_mesin_bor_integrated,
-        coupling: data28.state_coupling_bor_integrated,
-        counter1: 0,
-        counter2: 0
+        status: whatIsMyStatus(data28.state_mesin_bor_integrated, data28.state_coupling_bor_integrated),
+        last_count_time: waktu28,
+        sepur1_count: 0,
+        sepur1_status: myCouplingIs(data28.state_coupling_bor_integrated),
+        sepur1_last_count: 0,
+        sepur2_count: 0,
+        sepur2_status: myCouplingIs(data28.state_coupling_bor_integrated),
+        sepur2_last_count: 0
       },
       bilas_p3: {
-        mesin: data28.state_mesin_bilas_p3
+        mesin: data28.state_mesin_bilas_p3 == "1" ? "iddle" : "run"
       }
     }
 
