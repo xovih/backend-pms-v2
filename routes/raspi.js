@@ -27,6 +27,21 @@ function myCouplingIs(cop) {
   return "run"
 }
 
+function hours24(s) {
+  let AMPM = s.slice(-2);
+  let timeArr = s.slice(0, -2).split(":");
+  if (AMPM === "AM" && timeArr[0] === "12") {
+    // catching edge-case of 12AM
+    timeArr[0] = "00";
+  } else if (AMPM === "PM") {
+    // everything with PM can just be mod'd and added with 12 - the max will be 23
+    timeArr[0] = (timeArr[0] % 12) + 12
+  }
+
+  const str = timeArr.join(":")
+  return str.substring(0, str.length - 1);;
+}
+
 router.post("/update", async (req, res) => {
   try {
 
@@ -57,7 +72,7 @@ router.post("/update", async (req, res) => {
         Sensor_Bubut_Integrated_2_2,
       } = req.body
 
-      const timee = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const timee = moment(state_time, ["h:mm:ss A"]).format("HH:mm:ss")
       const waktu = state_date + " " + timee
 
       const regang_int = {
@@ -141,7 +156,7 @@ router.post("/update", async (req, res) => {
         Sensor_Bor_Integrated_1_2,
       } = req.body
 
-      const timee = moment(state_date, ["h:mm:ss A"]).format("HH:mm:ss")
+      const timee = moment(state_time, ["h:mm:ss A"]).format("HH:mm:ss")
       const waktu = state_date + " " + timee
 
       const cuci_bilas = {
@@ -279,13 +294,13 @@ router.get("/mesin", async (req, res) => {
         sepur2_last_count: 0
       },
       cuci_bilas: {
-        mesin: data28.state_mesin_cuci_bilas == "1" ? "iddle" : "run"
+        status: data28.state_mesin_cuci_bilas == "1" ? "idle" : "run"
       },
       oven: {
-        mesin: data28.state_mesin_oven == "1" ? "iddle" : "run"
+        status: data28.state_mesin_oven == "1" ? "idle" : "run"
       },
       cuci_asam: {
-        mesin: data28.state_mesin_cuci_asam == "1" ? "iddle" : "run"
+        status: data28.state_mesin_cuci_asam == "1" ? "idle" : "run"
       },
       botol_integrated: {
         status: whatIsMyStatus(data28.state_mesin_botol_integrated, data28.state_coupling_botol_integrated),
@@ -308,7 +323,7 @@ router.get("/mesin", async (req, res) => {
         sepur2_last_count: 0
       },
       bilas_p3: {
-        mesin: data28.state_mesin_bilas_p3 == "1" ? "iddle" : "run"
+        status: data28.state_mesin_bilas_p3 == "1" ? "idle" : "run"
       }
     }
 
